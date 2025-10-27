@@ -1,0 +1,272 @@
+import React, {useContext, useEffect, useState} from 'react';
+import {useRouter} from "next/router";
+import Image from "next/image";
+import {
+    AppliancesDetails,
+    BathroomDetails, BuildDetails,
+    InteriorsDetails,
+    KeyinfoDetails, LandDetails,
+    OtherDetails, UtiliesDetails
+} from "../../../../constants/data";
+import {Button} from "@/components/Custom";
+import {_getProperty, _getSubProperty} from "@/hooks/property.hooks";
+import {PropertyContext} from "@/context/property";
+import {SchedulerContext} from "@/context/scheduler";
+
+function Details(props) {
+
+    const router = useRouter();
+    const {id} = router.query;
+    // const params = useParams()
+
+    // contexts
+    // @ts-ignore
+    const [hot, setHot, sub, setSub, full, setFull, tempProp, setTempProp] = useContext(PropertyContext);
+    // @ts-ignore
+    const [temp, setTemp] = useContext(SchedulerContext);
+
+    //states
+    const [selectedV, setSelectedV] = useState("All");
+    const [loading, setLoading] = useState(false);
+    const [property, setProperty] = useState<any>(null);
+    const [subProperty, setSubProperty] = useState<any>(null);
+
+    const data = [
+        "All",
+        "Key Info",
+        "Bedrooms",
+        "Bathrooms",
+        "Interior Features",
+        "Appliances",
+        "Other rooms",
+        "Land Info",
+        "Building Info",
+        "Utilities",
+    ];
+
+    // function
+    const _constructor = async() => {
+        console.log({id, tempProp});
+
+        if (!id) return;
+        
+        setLoading(true);
+        const data = await _getProperty(id as string);
+        setProperty(data)
+        
+        // Set the first sub-property as the default if available
+        if (data && data.SubProperties && data.SubProperties.length > 0) {
+            setSubProperty(data.SubProperties[0]);
+        }
+
+        console.log({data});
+        setLoading(false);
+    }
+
+    const gotoPage = (value: string, query: boolean = false) => {
+        if(query){
+            router.push(
+                {pathname: value,
+                    query:{
+                        live: true
+                    }
+                }, undefined,
+                {shallow: true}
+            );
+        } else {
+            router.push(
+                value,
+                undefined, {shallow: true}
+            )
+        }
+    };
+
+    useEffect(() => {
+        _constructor();
+        /*return(() => {
+            setTempProp(null);
+        })*/
+    }, [])
+
+    return (
+        <div className={"w-full h-full text-black px-[30px] flex flex-col max-w-[90vw] mb-10 pb-[20px] overscroll-none"}>
+            {/*header*/}
+            <div className={"flex flex-row items-center w-full mb-[20px]"}>
+                <Image
+                    src={require("../../../../../public/svg/arrow_back_black.svg")}
+                    alt={"back button"} className={"w-[40px] h-[40px] mr-[20px] p-[5px] cursor-pointer"}
+                    onClick={() => router.back()}
+                />
+
+                <h2 className={"text-black text-[14px] font-semibold"}>Details</h2>
+            </div>
+            <div className={"w-full p-[20px] border-b-[1px] border-black flex flex-row items-center overflow-hidden overflow-x-scroll"}>
+                {
+                    data.map((item, index) => (
+                        <div className={"flex flex-row items-center justify-center mx-[15px] cursor-pointer"} key={index}
+                            onClick={() => setSelectedV(item)}
+                        >
+                            <p
+                                className={
+                                    selectedV === item ?  "text-black font-semibold text-[13px] p-[5px] border-b-[2px] border-main-secondary whitespace-nowrap" :
+                                    "text-black font-semibold text-[13px] p-[5px] whitespace-nowrap"
+                                }
+                            >
+                                {item}
+                            </p>
+                        </div>
+                    ))
+                }
+            </div>
+
+            {
+                loading ?
+                    <div className={"w-[150px] h-[100px] mt-[30%] flex self-center animate-bounce"}>
+                        <Image src={require("../../../../../public/icons/logo.png")} alt={"logo"} />
+                    </div>
+                    :
+                    // Body
+                    <div className={"w-full overflow-y-scroll flex flex-col"}>
+
+                        <div className={`w-full grid gap-2 grid-cols-2 p-[30px]`}>
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Key Info</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.keyInfo?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item.label}</p>
+                                                <p className={"text-black text-[12px]"}>{item.value}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Bedrooms</h2>
+                                <div className={"flex flex-col"}>
+                                    <div className={"flex flex-row items-center justify-between"}>
+                                        <p className={"text-black text-[12px]"}>Bedrooms</p>
+                                        <p className={"text-black text-[12px]"}>{subProperty?.bedrooms}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Bathrooms</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.bathrooms?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item.type}</p>
+                                                <p className={"text-black text-[12px]"}>{item.count}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Interior</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.interior?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Appliances</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.appliances?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Other Rooms</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.otherRooms?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Land Information</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.landInfo?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item.label}</p>
+                                                <p className={"text-black text-[12px]"}>{item.value}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Building Information</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.keyInfo?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item.label}</p>
+                                                <p className={"text-black text-[12px]"}>{item.value}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            <div className={"mr-[20px] ml-[20px] mb-[25px]"}>
+                                <h2 className={"font-semibold text-black text-[14px] mb-[20px]"}>Utilities</h2>
+                                <div className={"flex flex-col"}>
+                                    {
+                                        subProperty?.utilities?.map((item, index) => (
+                                            <div className={"flex flex-row items-center justify-between mb-[15px]"} key={index}>
+                                                <p className={"text-black text-[12px]"}>{item}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={"flex flex-col items-center justify-center w-[50%] self-center mb-[10px] cursor-pointer"}>
+                            <Button
+                                onClick={() => {
+                                    setTemp(subProperty)
+                                    gotoPage("/schedule/create", true )
+                                }}
+                            >
+                                Schedule Visit
+                            </Button>
+                        </div>
+
+                        <div className={"flex flex-col items-center justify-center w-[50%] self-center mb-[10px] bottom-[50px]"}>
+                            <div className={"py-[30px]"}></div>
+                        </div>
+                    </div>
+            }
+
+        </div>
+    );
+}
+
+export default Details;

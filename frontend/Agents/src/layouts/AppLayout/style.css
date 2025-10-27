@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .root {
+    @apply flex m-0 bg-red-600 h-full w-full fixed;
+  }
+}

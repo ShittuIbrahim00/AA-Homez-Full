@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Allow scrollbars for specific elements while keeping most hidden */
+/* Only hide scrollbars for non-scrollable elements */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Keep scrollbars hidden for body and html */
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* === Make React Big Calendar Agenda view responsive === */
+.rbc-agenda-view table {
+  @apply w-full table-auto;
+}
+
+.rbc-agenda-view thead th,
+.rbc-agenda-view tbody td {
+  @apply px-3 py-2 text-left align-top text-sm break-words;
+}
+
+/* Allow text to wrap instead of overflowing */
+.rbc-agenda-event-cell {
+  white-space: normal !important;
+  word-wrap: break-word;
+}
+
+/* Add horizontal scrolling on mobile */
+@media (max-width: 768px) {
+  .rbc-agenda-view {
+    overflow-x: auto;
+    display: block;
+  }
+
+  .rbc-agenda-view table {
+    min-width: 600px;
+    /* force scrollable width */
+  }
+}
+
+/* Ensure calendar is responsive */
+.rbc-calendar {
+  overflow-x: auto;
+  min-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .rbc-calendar {
+    min-width: 600px;
+  }
+
+  .rbc-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .rbc-toolbar-label {
+    align-self: center;
+  }
+}

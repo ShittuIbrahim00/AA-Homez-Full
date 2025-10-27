@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css?family=Kanit:400,700&display=swap');
+
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+/* Chrome, Edge, and Safari - Custom scrollbar styling */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Hide scrollbars for body only */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
+
+/* Custom styles for map popup */
+.custom-popup .leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.custom-popup .leaflet-popup-content {
+  margin: 12px 20px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 14px;
+}
+
+.custom-popup .leaflet-popup-tip {
+  background: white;
+}
+
+/* Zillow-inspired property card styles */
+.property-card {
+  transition: all 0.3s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive calendar styles */
+.rbc-calendar {
+  min-width: 300px;
+}
+
+.rbc-header {
+  font-size: 0.75rem;
+  padding: 5px 0;
+}
+
+.rbc-day-bg {
+  min-height: 80px;
+}
+
+.rbc-event {
+  font-size: 0.75rem;
+  padding: 2px 4px;
+}
+
+.rbc-agenda-view table.rbc-agenda-table {
+  font-size: 0.875rem;
+}
+
+.rbc-agenda-view table.rbc-agenda-table thead>tr>th {
+  padding: 6px 10px;
+}
+
+.rbc-agenda-view table.rbc-agenda-table tbody>tr>td {
+  padding: 6px 10px;
+}
+
+/* Responsive table styles */
+@media (max-width: 768px) {
+  .rbc-calendar {
+    font-size: 0.75rem;
+  }
+
+  .rbc-header {
+    font-size: 0.65rem;
+  }
+
+  .rbc-event {
+    font-size: 0.65rem;
+    padding: 1px 2px;
+  }
+
+  .rbc-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .rbc-toolbar-label {
+    font-size: 0.875rem;
+  }
+
+  .rbc-btn-group button {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
+
+/* Improved table scrolling */
+.schedule-table-container {
+  overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.schedule-table-container table {
+  width: 100%;
+  table-layout: auto;
+}
+
+/* Ensure proper scrolling on mobile */
+@media (max-width: 768px) {
+  .schedule-table-container {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .schedule-table-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .schedule-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .schedule-table-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+
+  .schedule-table-container::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+  }
+}
+
+/* Fix for modal overflow on mobile */
+@media (max-width: 480px) {
+  .modal-container {
+    margin: 0.5rem;
+    max-height: 90vh;
+  }
+
+  .modal-content {
+    padding: 1rem;
+  }
+}
