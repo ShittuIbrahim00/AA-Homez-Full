@@ -1,0 +1,22 @@
+{
+    "Platinum": {
+        "sales": 0.004,
+        "referral": 2
+    },
+    "Diamond": {
+        "sales": 0.004,
+        "referral": 3
+    },
+    "Gold": {
+        "sales": 0.003,
+        "referral": 5
+    },
+    "Silver": {
+        "sales": 0.002,
+        "referral": 7
+    },
+    "Bronze": {
+        "sales": 0.001,
+        "referral": 0.0001
+    }
+}

@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  server:
+    container_name: node-boilerplate
+    restart: always
+    build: .
+    volumes:
+      - .:/usr/app         # Mount the current directory to /usr/app in the container
+      - /usr/app/node_modules  # Keep node_modules within the container to avoid conflicts
+    ports:
+      - "3000:3000"
+      - "3010:3010"
+    command: npm start
